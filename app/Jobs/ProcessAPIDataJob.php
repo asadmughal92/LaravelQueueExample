@@ -34,20 +34,16 @@ class ProcessAPIDataJob implements ShouldQueue
      */
     public function handle()
     {
-        // Simulating the data processing (e.g., log data to a file)
 
-        //storing in a log file and also in database
         $log = json_encode($this->data) . "\n";
         file_put_contents(storage_path('data.log'), $log, FILE_APPEND);
 
-        $this->prodcut::insert($this->data);
+
+        $this->prodcut->insert($this->data);
     }
 
     public function failed(\Exception $exception = null)
     {
-        // Handle failed jobs (e.g., send notifications)
-        // For demonstration purposes, you can log the exception
 
-        file_put_contents(storage_path('error.log'), $exception->getMessage(), FILE_APPEND);
     }
 }
