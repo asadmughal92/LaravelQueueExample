@@ -15,6 +15,9 @@ class CreateProductsTable extends Migration
     {
         Schema::create('products', function (Blueprint $table) {
             $table->id();
+            $table->string('product_name');
+            $table->decimal('price', 10, 2); // Example: up to 10 digits with 2 decimal places
+            $table->boolean('status')->default(true); // Example: using a boolean for status (active/inactive)
             $table->timestamps();
         });
     }
