@@ -1,7 +1,6 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
-
+use App\Http\Controllers\AdminDashboardController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -13,6 +12,12 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Auth::routes();
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::get('/posts', [AdminDashboardController::class, 'getPost'])->name('posts');
+    Route::get('/products', [AdminDashboardController::class, 'getProducts'])->name('products');
+    Route::get('/jobs', [AdminDashboardController::class, 'getjobs'])->name('jobs');
 });

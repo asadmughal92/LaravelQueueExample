@@ -9,22 +9,23 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use App\Models\Products;
+use Exception;
 class ProcessAPIDataJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $data;
-    protected $prodcut;
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(array $data,Products $prodcut )
+    public function __construct(array $data)
     {
         //
         $this->data = $data;
-        $this->prodcut = $prodcut;
+
     }
 
     /**
@@ -34,16 +35,22 @@ class ProcessAPIDataJob implements ShouldQueue
      */
     public function handle()
     {
+        try {
+            $log = json_encode($this->data) . "\n";
+            file_put_contents(storage_path('data.log'), $log, FILE_APPEND);
 
-        $log = json_encode($this->data) . "\n";
-        file_put_contents(storage_path('data.log'), $log, FILE_APPEND);
-
-
-        $this->prodcut->insert($this->data);
+            Products::insert($this->data);
+        } catch (Exception $exception) {
+            // Log the exception
+            file_put_contents(storage_path('error.log'),$exception->getMessage(), FILE_APPEND);
+        }
     }
 
     public function failed(\Exception $exception = null)
     {
-
+        // Handle the failure, log the error, or perform any other necessary actions
+        if ($exception !== null) {
+            file_put_contents(storage_path('error.log'),$exception->getMessage(), FILE_APPEND);
+        }
     }
 }

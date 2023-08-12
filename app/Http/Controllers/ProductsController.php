@@ -14,9 +14,10 @@ class ProductsController extends Controller
             'price' => 'required|regex:/^\d+(\.\d{1,2})?$/',
         ]);
 
-        $product = new Products;
+
         // Queue a job to process the data
-        dispatch(new \App\Jobs\ProcessAPIDataJob($request->input(),$product));
+
+        dispatch(new \App\Jobs\ProcessAPIDataJob($request->input()));
 
         return response()->json(['message' => 'Data processing job queued successfully']);
     }
